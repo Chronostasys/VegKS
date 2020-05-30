@@ -39,6 +39,8 @@ char* head2 = (char*)malloc(sizeof(char) * 100);
 char* head3 = (char*)malloc(sizeof(char) * 100);
 
 void readCsv(PrimaryList* plist) {
+	plantGid = 0;
+	vegGid = 0;
 	FILE* f = fopen("C:/Users/17697/Desktop/蔬菜种类信息表1.csv", "r");
 	fflush(f);
 	char** classes = (char**)malloc(sizeof(char*) * 100);

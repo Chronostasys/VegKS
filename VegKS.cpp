@@ -19,6 +19,55 @@ int main()
     //printf_s("aaa");
     SavePrimaryCsv(&plist);
 }
+extern "C"{
+    DllExport PrimaryNode* GetPrimary() {
+        auto plist = PrimaryList();
+        readCsv(&plist);
+        return plist.head->nextVegClass;
+    }
+    DllExport PrimaryNode* NextPrimary(PrimaryNode* node) {
+        return node->nextVegClass;
+    }
+    DllExport char GetPrimaryId(PrimaryNode* node) {
+        return node->classId;
+    }
+    DllExport char* GetPrimaryName(PrimaryNode* node) {
+        return node->className;
+    }
+    DllExport SecondaryNode* GetSecondary(PrimaryNode* node) {
+        return node->vegInfos->head->nextVegInfo;
+    }
+    DllExport SecondaryNode* NextSecondary(SecondaryNode* node) {
+        return node->nextVegInfo;
+    }
+    DllExport int GetSecondaryId(SecondaryNode* node) {
+        return node->vegId;
+    }
+    DllExport char* GetSecondaryName(SecondaryNode* node) {
+        return node->vegName;
+    }
+    DllExport char* GetSecondaryNutrition(SecondaryNode* node) {
+        return node->nutrition;
+    }
+    DllExport TertiaryNode* GetTertiary(SecondaryNode* node) {
+        return node->vegs->head->nextVeg;
+    }
+    DllExport TertiaryNode* NextTertiary(TertiaryNode* node) {
+        return node->nextVeg;
+    }
+    DllExport int GetTertiaryId(TertiaryNode* node) {
+        return node->id;
+    }
+    DllExport int GetTertiaryArea(TertiaryNode* node) {
+        return node->area;
+    }
+    DllExport char* GetTertiaryYear(TertiaryNode* node) {
+        return node->year;
+    }
+    DllExport float GetTertiaryWeight(TertiaryNode* node) {
+        return node->weight;
+    }
+}
 
 
 

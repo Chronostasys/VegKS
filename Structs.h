@@ -10,19 +10,20 @@ struct SecondaryNode;
 struct TertiaryNode;
 
 
-
+#define DllExport __declspec(dllexport)
 int vegGid = 0;
 int	plantGid = 0;
+extern "C" {
+	DllExport struct PrimaryNode
+	{
+		char classId;
+		char className[8];
+		PrimaryNode* nextVegClass;
+		SecondaryList* vegInfos;
+	};
+}
 
-struct PrimaryNode
-{
-	char classId;
-	char className[8];
-	PrimaryNode* nextVegClass;
-	SecondaryList* vegInfos;
-};
-
-
+DllExport
 struct SecondaryNode
 {
 	int vegId;
@@ -31,6 +32,7 @@ struct SecondaryNode
 	SecondaryNode* nextVegInfo;
 	TertiaryList* vegs;
 };
+DllExport
 struct TertiaryNode
 {
 	int id;
