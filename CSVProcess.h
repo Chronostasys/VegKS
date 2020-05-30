@@ -7,17 +7,35 @@
 #include <stdio.h>
 
 void ReadSecondaryCsv(PrimaryList* plist);
-void ReadStrings(char* str, char** classes, int* i);
+/// <summary>
+/// 把csv行字符串分解成独立的元素
+/// </summary>
+/// <param name="str">源csv的字符串</param>
+/// <param name="classes">以字符串格式读取出来的元素</param>
+/// <param name="i">读出来的元素个数</param>
+void ParseReadStrings(char* str, char** classes, int* i);
 void ReadTertiaryCSV(PrimaryList* plist);
 void SavePrimaryCsv(PrimaryList* plist);
-void SaveStrings(char* str, char** classes, int n);
+/// <summary>
+/// 把元素parse回csv的行
+/// </summary>
+/// <param name="str"></param>
+/// <param name="classes"></param>
+/// <param name="n">classes 长度</param>
+void ParseSaveStrings(char* str, char** classes, int n);
 void SaveSecondaryCsv(PrimaryList* plist);
 void SaveTertiaryCsv(PrimaryList* plist);
-
-
-//utf-8 padding开头
+/// <summary>
+/// utf-8 padding开头
+/// </summary>
 char* padding = (char*)malloc(sizeof(char) * 100);
+/// <summary>
+/// 第二个表格表头
+/// </summary>
 char* head2 = (char*)malloc(sizeof(char) * 100);
+/// <summary>
+/// 第三个表格表头
+/// </summary>
 char* head3 = (char*)malloc(sizeof(char) * 100);
 
 void readCsv(PrimaryList* plist) {
@@ -31,12 +49,12 @@ void readCsv(PrimaryList* plist) {
 	strcpy(padding, del);
 	fgets(del, 1000, f);
 	int i1 = 0;
-	ReadStrings(del, classIds, &i1);
+	ParseReadStrings(del, classIds, &i1);
 	char* str = (char*)malloc(sizeof(char) * 100);
 	fflush(f);
 	fgets(str, 1000, f);
 	int i = 0;
-	ReadStrings(str, classes, &i);
+	ParseReadStrings(str, classes, &i);
 	for (size_t j = 0; j < i; j++)
 	{
 		plist->Add(classIds[j][0], classes[j]);
@@ -54,13 +72,7 @@ void readCsv(PrimaryList* plist) {
 	ReadSecondaryCsv(plist);
 	ReadTertiaryCSV(plist);
 }
-/// <summary>
-/// 把csv字符串分解成独立的元素
-/// </summary>
-/// <param name="str">源csv的字符串</param>
-/// <param name="classes">以字符串格式读取出来的元素</param>
-/// <param name="i">读出来的元素个数</param>
-void ReadStrings(char* str, char** classes, int* i) {
+void ParseReadStrings(char* str, char** classes, int* i) {
 	char* temp = (char*)malloc(sizeof(char) * 100);
 	*i = 0;
 	int i1 = 0;
@@ -93,13 +105,7 @@ void ReadStrings(char* str, char** classes, int* i) {
 	}
 	free(temp);
 }
-/// <summary>
-/// 
-/// </summary>
-/// <param name="str"></param>
-/// <param name="classes"></param>
-/// <param name="n">classes 长度</param>
-void SaveStrings(char* str, char** classes, int n) {
+void ParseSaveStrings(char* str, char** classes, int n) {
 	char* temp = (char*)malloc(sizeof(char) * 1000);
 	temp[0] = '\0';
 	for (int i = 0; i < n; i++)
@@ -137,7 +143,7 @@ void ReadSecondaryCsv(PrimaryList* plist) {
 		}
 		//free(end);
 		int i = 0;
-		ReadStrings(str, classes, &i);
+		ParseReadStrings(str, classes, &i);
 		std::function<bool(PrimaryNode*)> func = [&](PrimaryNode* node) {
 			return node->classId == classes[2][0];
 		};
@@ -177,7 +183,7 @@ void ReadTertiaryCSV(PrimaryList* plist) {
 		}
 		//free(end);
 		int i = 0;
-		ReadStrings(str, classes, &i);
+		ParseReadStrings(str, classes, &i);
 		auto secfunc = [&](SecondaryNode* node) {
 			return node->vegId == atoi(classes[1]);
 		};
@@ -229,7 +235,7 @@ void SavePrimaryCsv(PrimaryList* plist)
 	char* dest = (char*)malloc(sizeof(char) * 100);
 	for (size_t i = 0; i < 2; i++)
 	{
-		SaveStrings(dest, temp[i], n);
+		ParseSaveStrings(dest, temp[i], n);
 		if (i==0)
 		{
 			char* padtemp = (char*)malloc(sizeof(char) * 100);
@@ -295,7 +301,7 @@ void SaveSecondaryCsv(PrimaryList* plist)
 
 	for (size_t i = 0; i < n; i++)
 	{
-		SaveStrings(dest, temp[i], 4);
+		ParseSaveStrings(dest, temp[i], 4);
 		fputs(dest, f);
 		fflush(f);
 	}
@@ -366,7 +372,7 @@ void SaveTertiaryCsv(PrimaryList* plist)
 
 	for (size_t i = 0; i < n; i++)
 	{
-		SaveStrings(dest, temp[i], 5);
+		ParseSaveStrings(dest, temp[i], 5);
 		fputs(dest, f);
 		fflush(f);
 	}
