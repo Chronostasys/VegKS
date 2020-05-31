@@ -20,6 +20,7 @@ extern "C" {
 		char className[8];
 		PrimaryNode* nextVegClass;
 		SecondaryList* vegInfos;
+		PrimaryNode* prevVegClass;
 	};
 }
 
@@ -31,6 +32,7 @@ struct SecondaryNode
 	char nutrition[50];
 	SecondaryNode* nextVegInfo;
 	TertiaryList* vegs;
+	SecondaryNode* prevVegInfo;
 };
 DllExport
 struct TertiaryNode
@@ -40,6 +42,7 @@ struct TertiaryNode
 	float weight;
 	char year[5];
 	TertiaryNode* nextVeg;
+	TertiaryNode* prevVeg;
 };
 struct TertiaryList
 {
@@ -65,12 +68,35 @@ struct TertiaryList
 		}
 		return current;
 	}
+	TertiaryNode* While(std::function<bool(TertiaryNode*)> lambda) {
+		TertiaryNode* current2 = head;
+		while (true)
+		{
+			current2 = current2->nextVeg;
+			if (current2 == nullptr)
+			{
+				break;
+			}
+			if (!lambda(current2))
+			{
+				if (current2->nextVeg==nullptr)
+				{
+					current2->prevVeg->nextVeg = nullptr;
+					break;
+				}
+				current2->prevVeg->nextVeg = current2->nextVeg;
+				current2->nextVeg->prevVeg = current2->prevVeg;
+			}
+		}
+		return head->nextVeg;
+	}
 	void Remove(int pos) {
 		count--;
 		if (pos == 0)
 		{
 			TertiaryNode* del = head->nextVeg;
 			head->nextVeg = head->nextVeg->nextVeg;
+			head->nextVeg->prevVeg = head;
 			free(del);
 			return;
 		}
@@ -78,6 +104,7 @@ struct TertiaryList
 		TertiaryNode* prev = ElementAt(pos - 1);
 		TertiaryNode* del = prev->nextVeg;
 		prev->nextVeg = prev->nextVeg->nextVeg;
+		prev->nextVeg->prevVeg = prev;
 		free(del);
 	}
 	void Add(int area, float weight, const char* year) {
@@ -88,6 +115,7 @@ struct TertiaryList
 			{
 				current->nextVeg = MallocTertiaryNode(plantGid+1, area, weight, year);
 				current->nextVeg->nextVeg = nullptr;
+				current->nextVeg->prevVeg = current;
 				plantGid++;
 				break;
 			}
@@ -151,6 +179,7 @@ struct SecondaryList
 				current->nextVegInfo->vegs = (TertiaryList*)malloc(sizeof(TertiaryList) * 2);
 				current->nextVegInfo->vegs->init();
 				current->nextVegInfo->nextVegInfo = nullptr;
+				current->nextVegInfo->prevVegInfo = current;
 				vegGid++;
 				break;
 			}
@@ -169,6 +198,7 @@ struct SecondaryList
 				current->nextVegInfo->vegs = (TertiaryList*)malloc(sizeof(TertiaryList) * 2);
 				current->nextVegInfo->vegs->init();
 				current->nextVegInfo->nextVegInfo = nullptr;
+				current->nextVegInfo->prevVegInfo = current;
 				vegGid++;
 				break;
 			}
@@ -192,6 +222,31 @@ struct SecondaryList
 		}
 		return current;
 	}
+	SecondaryNode* While(std::function<bool(SecondaryNode*)> lambda) {
+		SecondaryNode* current1 = head;
+		while (true)
+		{
+			current1 = current1->nextVegInfo;
+			if (current1==nullptr)
+			{
+				break;
+			}
+			if (!lambda(current1))
+			{
+				if (current1->nextVegInfo==nullptr)
+				{
+					current1->prevVegInfo->nextVegInfo = nullptr;
+					break;
+				}
+				else
+				{
+					current1->nextVegInfo->prevVegInfo = current1->prevVegInfo;
+					current1->prevVegInfo->nextVegInfo = current1->nextVegInfo;
+				}
+			}
+		}
+		return head->nextVegInfo;
+	}
 
 	void Remove(int pos) {
 		count--;
@@ -199,6 +254,7 @@ struct SecondaryList
 		{
 			SecondaryNode* del = head->nextVegInfo;
 			head->nextVegInfo = head->nextVegInfo->nextVegInfo;
+			head->nextVegInfo->prevVegInfo = head;
 			free(del);
 			return;
 		}
@@ -206,6 +262,7 @@ struct SecondaryList
 		SecondaryNode* prev = ElementAt(pos - 1);
 		SecondaryNode* del = prev->nextVegInfo;
 		prev->nextVegInfo = prev->nextVegInfo->nextVegInfo;
+		prev->prevVegInfo = prev;
 		free(del);
 	}
 
@@ -266,6 +323,7 @@ struct PrimaryList
 			if (current->nextVegClass == nullptr)
 			{
 				current->nextVegClass = MallocPrimaryNode(classId, className);
+				current->nextVegClass->prevVegClass = current;
 				break;
 			}
 			current = current->nextVegClass;
@@ -288,12 +346,38 @@ struct PrimaryList
 		}
 		return current;
 	}
+	PrimaryNode* While(std::function<bool(PrimaryNode*)> lambda) {
+		PrimaryNode* current = head;
+		while (true)
+		{
+			current = current->nextVegClass;
+			if (current == nullptr)
+			{
+				break;
+			}
+			if (!lambda(current))
+			{
+				if (current->nextVegClass==nullptr)
+				{
+					current->prevVegClass->nextVegClass = nullptr;
+					break;
+				}
+				else
+				{
+					current->prevVegClass->nextVegClass = current->nextVegClass;
+					current->nextVegClass->prevVegClass = current->prevVegClass;
+				}
+			}
+		}
+		return head->nextVegClass;
+	}
 	void Remove(int pos) {
 		count--;
 		if (pos == 0)
 		{
 			PrimaryNode* del = head->nextVegClass;
 			head->nextVegClass = head->nextVegClass->nextVegClass;
+			head->nextVegClass->prevVegClass = head;
 			free(del);
 			return;
 		}
@@ -301,6 +385,7 @@ struct PrimaryList
 		PrimaryNode* prev = ElementAt(pos - 1);
 		PrimaryNode* del = prev->nextVegClass;
 		prev->nextVegClass = prev->nextVegClass->nextVegClass;
+		prev->nextVegClass->prevVegClass = prev;
 		free(del);
 
 	}
