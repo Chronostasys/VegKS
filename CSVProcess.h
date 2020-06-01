@@ -195,7 +195,7 @@ void ReadTertiaryCSV(PrimaryList* plist) {
 		};
 		PrimaryNode* node = plist->Where(func);
 		SecondaryNode* secNode = node->vegInfos->Where(secfunc);
-		secNode->vegs->Add(atoi(classes[2]), atof(classes[3]), classes[4]);
+		secNode->vegs->Add(atoi(classes[0]), atoi(classes[2]), atof(classes[3]), classes[4]);
 		for (size_t j = 0; j < i; j++)
 		{
 			free(classes[j]);

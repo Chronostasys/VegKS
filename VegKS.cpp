@@ -4,10 +4,6 @@
 #include <stdio.h>
 #include "CSVProcess.h"
 #include <string.h>
-#include<WTypes.h>
-#define CP_ACP 0
-#define CP_UTF8 65001
-using namespace std;
 
 struct Heads
 {
@@ -15,6 +11,7 @@ struct Heads
     SecondaryNode* snode;
     TertiaryNode* tnode;
 };
+
 
 bool contains(const char* str, const char* substr) {
     int len = strlen(str);
@@ -88,12 +85,17 @@ extern "C"{
         return node->weight;
     }
     DllExport Heads* Search(char* key, PrimaryNode* p) {
-        FILE* f = fopen("string.txt", "r");
-        char a1[100];
-        fgets(a1, 100, f);
+        //FILE* f = fopen("string.txt", "r");
+        //char a1[100];
+        //fgets(a1, 100, f);
+        //fflush(f);
+        //fclose(f);
+
+        FILE* f = fopen("string.txt", "w+");
+        fputs(key, f);
         fflush(f);
         fclose(f);
-        key = a1;
+        //key = toUTF8(key);
         auto headT = TertiaryNode();
         auto currentT = &headT;
         auto headS = SecondaryNode();
@@ -149,6 +151,72 @@ extern "C"{
     DllExport TertiaryNode* GetTSearch(Heads* h) {
         return h->tnode;
     }
+    DllExport PrimaryNode* EditS(PrimaryNode* p, int vegId, char* vegName, char* nutrition, char classid) {
+        auto plist1 = PrimaryList();
+        plist1.head->nextVegClass = p;
+        p->prevVegClass = plist1.head;
+        SecondaryNode* snode;
+        plist1.While([&](PrimaryNode* p) {
+            p->vegInfos->While([&](SecondaryNode* s) {
+                if (s->vegId == vegId) {
+                    snode = s;
+                    return false;
+                }
+                return true;
+            });
+            return true;
+        });
+        auto node = plist1.Where([&](PrimaryNode* p) {
+            return p->classId == classid;
+        });
+        node->vegInfos->Add(vegId, vegName, nutrition);
+        
+        SavePrimaryCsv(&plist1);
+        return p;
+    }
+    DllExport PrimaryNode* EditT(PrimaryNode* p, int id, int area, float weight, char* year) {
+        auto plist1 = PrimaryList();
+        plist1.head->nextVegClass = p;
+        p->prevVegClass = plist1.head;
+        SecondaryNode* snode;
+        TertiaryNode* tnode;
+        bool found = false;
+        plist1.While([&](PrimaryNode* p) {
+            p->vegInfos->While([&](SecondaryNode* s) {
+                s->vegs->While([&](TertiaryNode* t) {
+                    if (t->id==id)
+                    {
+                        tnode = t;
+                        found = true;
+                        return false;
+                    }
+                    return true;
+                });
+                if (found)
+                {
+                    snode = s;
+                    found = false;
+                }
+                return true;
+            });
+            return true;
+        });
+        snode->vegs->Add(id, area, weight, year);
+
+        SavePrimaryCsv(&plist1);
+        return p;
+    }
+    DllExport PrimaryNode* EditP(PrimaryNode* p, char id, char* name) {
+        auto plist1 = PrimaryList();
+        plist1.head->nextVegClass = p;
+        p->prevVegClass = plist1.head;
+        auto node = plist1.Where([&](PrimaryNode* p) {
+            return p->classId == id;
+        });
+        strcpy(node->className, name);
+        SavePrimaryCsv(&plist1);
+        return p;
+    }
 }
 int main()
 {
@@ -165,7 +233,7 @@ int main()
     //auto b = 0;
     //printf_s("aaa");
     //SavePrimaryCsv(&plist);
-    char a[10] = "1";
+    char a[10] = "µ°°×ÖÊ";
     FILE* f = fopen("string.txt", "r");
     char a1[100];
     fgets(a1, 100, f);

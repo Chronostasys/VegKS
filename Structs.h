@@ -123,6 +123,21 @@ struct TertiaryList
 		}
 		count++;
 	}
+	void Add(int id, int area, float weight, const char* year) {
+		TertiaryNode* current = this->head;
+		while (true)
+		{
+			if (current->nextVeg == nullptr)
+			{
+				current->nextVeg = MallocTertiaryNode(id, area, weight, year);
+				current->nextVeg->nextVeg = nullptr;
+				current->nextVeg->prevVeg = current;
+				plantGid++;
+				break;
+			}
+			current = current->nextVeg;
+		}
+	}
 
 	TertiaryNode* ElementAt(int pos) {
 		TertiaryNode* current = head;
