@@ -210,10 +210,50 @@ extern "C"{
         auto plist1 = PrimaryList();
         plist1.head->nextVegClass = p;
         p->prevVegClass = plist1.head;
+        p->prevVegClass = plist1.head;
         auto node = plist1.Where([&](PrimaryNode* p) {
             return p->classId == id;
         });
         strcpy(node->className, name);
+        SavePrimaryCsv(&plist1);
+        return p;
+    }
+    DllExport PrimaryNode* AddP(PrimaryNode* p, char id, char* name) {
+        auto plist1 = PrimaryList();
+        plist1.head->nextVegClass = p;
+        plist1.Add(id, name);
+        SavePrimaryCsv(&plist1);
+        return p;
+    }
+    DllExport PrimaryNode* AddS(PrimaryNode* p, int vegId, char* vegName, char* nutrition, char classid) {
+        auto plist1 = PrimaryList();
+        plist1.head->nextVegClass = p;
+        p->prevVegClass = plist1.head;
+        auto node = plist1.Where([&](PrimaryNode* p) {
+            return p->classId == classid;
+        });
+        node->vegInfos->Add(vegId, vegName, nutrition);
+
+        SavePrimaryCsv(&plist1);
+        return p;
+    }
+    DllExport PrimaryNode* AddT(PrimaryNode* p, int id, int area, float weight, char* year, int vegId) {
+        auto plist1 = PrimaryList();
+        plist1.head->nextVegClass = p;
+        p->prevVegClass = plist1.head;
+        SecondaryNode* snode;
+        plist1.While([&](PrimaryNode* p) {
+            p->vegInfos->While([&](SecondaryNode* s) {
+                if (s->vegId==vegId)
+                {
+                    snode = s;
+                }
+                return true;
+            });
+            return true;
+            });
+        snode->vegs->Add(id, area, weight, year);
+
         SavePrimaryCsv(&plist1);
         return p;
     }
