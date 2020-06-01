@@ -27,4 +27,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="菜农种植信息表1.csv" />
+    <None Include="蔬菜基本信息表1.csv" />
+    <None Include="蔬菜种类信息表1.csv" />
+  </ItemGroup>
 </Project>

@@ -41,7 +41,7 @@ char* head3 = (char*)malloc(sizeof(char) * 100);
 void readCsv(PrimaryList* plist) {
 	plantGid = 0;
 	vegGid = 0;
-	FILE* f = fopen("C:/Users/17697/Desktop/蔬菜种类信息表1.csv", "r");
+	FILE* f = fopen("蔬菜种类信息表1.csv", "r");
 	fflush(f);
 	char** classes = (char**)malloc(sizeof(char*) * 100);
 	char** classIds = (char**)malloc(sizeof(char*) * 100);
@@ -125,7 +125,7 @@ void ParseSaveStrings(char* str, char** classes, int n) {
 }
 
 void ReadSecondaryCsv(PrimaryList* plist) {
-	FILE* f = fopen("C:/Users/17697/Desktop/蔬菜基本信息表1.csv", "r");
+	FILE* f = fopen("蔬菜基本信息表1.csv", "r");
 	fflush(f);
 	char* del = (char*)malloc(sizeof(char) * 100);
 	//去掉utf-8开头的编码
@@ -165,7 +165,7 @@ void ReadSecondaryCsv(PrimaryList* plist) {
 }
 
 void ReadTertiaryCSV(PrimaryList* plist) {
-	FILE* f = fopen("C:/Users/17697/Desktop/菜农种植信息表1.csv", "r");
+	FILE* f = fopen("菜农种植信息表1.csv", "r");
 	fflush(f);
 	char* del = (char*)malloc(sizeof(char) * 100);
 	//去掉utf-8开头的编码
@@ -211,7 +211,7 @@ void ReadTertiaryCSV(PrimaryList* plist) {
 
 void SavePrimaryCsv(PrimaryList* plist)
 {
-	FILE* f = fopen("C:/Users/17697/Desktop/蔬菜种类信息表1.csv", "w+");
+	FILE* f = fopen("蔬菜种类信息表1.csv", "w+");
 	fflush(f);
 	//char* dest = nullptr;
 	PrimaryNode* node = plist->head;
@@ -254,7 +254,7 @@ void SavePrimaryCsv(PrimaryList* plist)
 }
 void SaveSecondaryCsv(PrimaryList* plist)
 {
-	FILE* f = fopen("C:/Users/17697/Desktop/蔬菜基本信息表1.csv", "w+");
+	FILE* f = fopen("蔬菜基本信息表1.csv", "w+");
 	fflush(f);
 	//char* dest = nullptr;
 	PrimaryNode* node = plist->head;
@@ -312,7 +312,7 @@ void SaveSecondaryCsv(PrimaryList* plist)
 
 void SaveTertiaryCsv(PrimaryList* plist)
 {
-	FILE* f = fopen("C:/Users/17697/Desktop/菜农种植信息表1.csv", "w+");
+	FILE* f = fopen("菜农种植信息表1.csv", "w+");
 	fflush(f);
 	//char* dest = nullptr;
 	PrimaryNode* node = plist->head;

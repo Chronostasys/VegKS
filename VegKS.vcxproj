@@ -143,6 +143,17 @@
     <ClInclude Include="CSVProcess.h" />
     <ClInclude Include="Structs.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="菜农种植信息表1.csv">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="蔬菜基本信息表1.csv">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="蔬菜种类信息表1.csv">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
