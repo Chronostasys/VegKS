@@ -210,11 +210,58 @@ extern "C"{
         auto plist1 = PrimaryList();
         plist1.head->nextVegClass = p;
         p->prevVegClass = plist1.head;
-        p->prevVegClass = plist1.head;
         auto node = plist1.Where([&](PrimaryNode* p) {
             return p->classId == id;
-        });
+            });
         strcpy(node->className, name);
+        SavePrimaryCsv(&plist1);
+        return p;
+    }
+    DllExport PrimaryNode* DelP(PrimaryNode* p, char id) {
+        auto plist1 = PrimaryList();
+        plist1.head->nextVegClass = p;
+        p->prevVegClass = plist1.head;
+        plist1.While([&](PrimaryNode* p) {
+                return p->classId != id;
+            });
+        SavePrimaryCsv(&plist1);
+        return p;
+    }
+    DllExport PrimaryNode* DelT(PrimaryNode* p, int id) {
+        auto plist1 = PrimaryList();
+        plist1.head->nextVegClass = p;
+        p->prevVegClass = plist1.head;
+        plist1.While([&](PrimaryNode* p) {
+            p->vegInfos->While([&](SecondaryNode* s) {
+                s->vegs->While([&](TertiaryNode* t) {
+                    if (t->id == id)
+                    {
+                        return false;
+                    }
+                    return true;
+                    });
+                return true;
+                });
+            return true;
+            });
+
+        SavePrimaryCsv(&plist1);
+        return p;
+    }
+    DllExport PrimaryNode* DelS(PrimaryNode* p, int vegId) {
+        auto plist1 = PrimaryList();
+        plist1.head->nextVegClass = p;
+        p->prevVegClass = plist1.head;
+        plist1.While([&](PrimaryNode* p) {
+            p->vegInfos->While([&](SecondaryNode* s) {
+                if (s->vegId == vegId) {
+                    return false;
+                }
+                return true;
+                });
+            return true;
+            });
+
         SavePrimaryCsv(&plist1);
         return p;
     }
