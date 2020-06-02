@@ -38,6 +38,40 @@ char* head2 = (char*)malloc(sizeof(char) * 100);
 /// </summary>
 char* head3 = (char*)malloc(sizeof(char) * 100);
 
+void ParseReadStrings(char* str, char** classes, int* i) {
+	char* temp = (char*)malloc(sizeof(char) * 100);
+	*i = 0;
+	int i1 = 0;
+	int i2 = 0;
+	while (true)
+	{
+		if (str[i1] == ',')
+		{
+			i1++;
+			temp[i2] = '\0';
+			i2 = 0;
+			int tt = *i;
+
+			classes[tt] = (char*)malloc(sizeof(char) * 100);
+			strcpy(classes[tt], temp);
+			(*i)++;
+			continue;
+		}
+		if (str[i1] == '\n')
+		{
+			temp[i2] = '\0';
+			classes[*i] = (char*)malloc(sizeof(char) * 100);
+			strcpy(classes[*i], temp);
+			(*i)++;
+			break;
+		}
+		temp[i2] = str[i1];
+		i1++;
+		i2++;
+	}
+	free(temp);
+}
+
 void readCsv(PrimaryList* plist) {
 	plantGid = 0;
 	vegGid = 0;
@@ -73,55 +107,6 @@ void readCsv(PrimaryList* plist) {
 	fclose(f);
 	ReadSecondaryCsv(plist);
 	ReadTertiaryCSV(plist);
-}
-void ParseReadStrings(char* str, char** classes, int* i) {
-	char* temp = (char*)malloc(sizeof(char) * 100);
-	*i = 0;
-	int i1 = 0;
-	int i2 = 0;
-	while (true)
-	{
-		if (str[i1] == ',')
-		{
-			i1++;
-			temp[i2] = '\0';
-			i2 = 0;
-			int tt = *i;
-
-			classes[tt] = (char*)malloc(sizeof(char) * 100);
-			strcpy(classes[tt], temp);
-			(*i)++;
-			continue;
-		}
-		if (str[i1] == '\n')
-		{
-			temp[i2] = '\0';
-			classes[*i] = (char*)malloc(sizeof(char) * 100);
-			strcpy(classes[*i], temp);
-			(*i)++;
-			break;
-		}
-		temp[i2] = str[i1];
-		i1++;
-		i2++;
-	}
-	free(temp);
-}
-void ParseSaveStrings(char* str, char** classes, int n) {
-	char* temp = (char*)malloc(sizeof(char) * 1000);
-	temp[0] = '\0';
-	for (int i = 0; i < n; i++)
-	{
-		if (i!=0)
-		{
-			temp = strcat(temp, ",");
-		}
-		temp = strcat(temp, classes[i]);
-
-	}
-	temp = strcat(temp, "\n");
-	strcpy(str, temp);
-	free(temp);
 }
 
 void ReadSecondaryCsv(PrimaryList* plist) {
@@ -208,7 +193,22 @@ void ReadTertiaryCSV(PrimaryList* plist) {
 	free(del);
 	fclose(f);
 }
+void ParseSaveStrings(char* str, char** classes, int n) {
+	char* temp = (char*)malloc(sizeof(char) * 1000);
+	temp[0] = '\0';
+	for (int i = 0; i < n; i++)
+	{
+		if (i != 0)
+		{
+			temp = strcat(temp, ",");
+		}
+		temp = strcat(temp, classes[i]);
 
+	}
+	temp = strcat(temp, "\n");
+	strcpy(str, temp);
+	free(temp);
+}
 void SavePrimaryCsv(PrimaryList* plist)
 {
 	FILE* f = fopen("蔬菜种类信息表1.csv", "w+");
